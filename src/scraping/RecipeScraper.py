@@ -61,7 +61,7 @@ class RecipeScraper():
 
       # Allrecipes date format: "Published on [Month Day, Year]
       # Need to extract only the date portion
-      months = ['January', 'Feburary', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
       
       # Loop through list of months and strip everything from month word onwards
       for month in months:
