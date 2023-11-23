@@ -43,7 +43,7 @@ class RecipeScraper():
   # Extract author name
   def get_recipe_author(self):
     try:
-      return self.soup.find('a', {'class': 'mntl-attribution__item-name'}).text.strip()
+      return self.soup.select_one('.mntl-attribution__item-name').text.strip()
     except:
       return np.nan
 
