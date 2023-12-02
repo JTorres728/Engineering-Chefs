@@ -1,0 +1,71 @@
+from flask import Flask, render_template, request, redirect, url_for, session
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Change this to a secret key for security reasons
+
+# Dummy user credentials (replace with your actual user authentication mechanism)
+valid_username = 'admin'
+valid_password = 'password'
+
+def is_authenticated(username, password):
+    return username == valid_username and password == valid_password
+
+def is_logged_in():
+    return 'username' in session
+
+@app.route('/')
+def index():
+    if is_logged_in():
+        return render_template('index.html')
+    else:
+        return redirect(url_for('login'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if is_authenticated(username, password):
+            session['username'] = username
+            return redirect(url_for('index'))
+        else:
+            return render_template('login.html', error='Invalid credentials')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
+# Your existing routes
+
+@app.route('/form')
+def form():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
+    return render_template('form.html')
+
+@app.route('/data/', methods=['POST', 'GET'])
+def data():
+    if not is_logged_in():
+        return redirect(url_for('login'))
+
+    if request.method == 'GET':
+        return f"The URL /data is accessed directly. Try going to '/form' to submit form"
+    if request.method == 'POST':
+        form_data = request.form
+        ingredients = form_data['Ingredients']
+        recommendations = get_recs(ingredients)
+        return render_template('data.html', recommendations=recommendations)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=81)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
